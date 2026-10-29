@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tidemark – Stocks and crypto in one account</title>
+<style>
+:root{
+  --bg:#f1f4f8;--surface:#ffffff;--ink:#0e1b2c;--muted:#566377;--line:#d8dfe8;
+  --brand:#1747d6;--brand-ink:#ffffff;--up:#0f7a55;--down:#c0352b;--soft:#e6ecf6;
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a121e;--surface:#111c2c;--ink:#e8eef7;--muted:#98a6ba;--line:#22324a;
+    --brand:#6d92ff;--brand-ink:#0a121e;--up:#3ecf9a;--down:#ff7a6e;--soft:#18273d;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a121e;--surface:#111c2c;--ink:#e8eef7;--muted:#98a6ba;--line:#22324a;
+  --brand:#6d92ff;--brand-ink:#0a121e;--up:#3ecf9a;--down:#ff7a6e;--soft:#18273d;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:700;line-height:1.1;margin:0;letter-spacing:-.01em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px;gap:12px}
+.logo{font-family:Georgia,serif;font-weight:700;font-size:22px;text-decoration:none}
+nav{display:flex;gap:20px;align-items:center;font-size:15px}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-block;border:0;border-radius:8px;padding:12px 20px;font:600 16px/1 system-ui,sans-serif;background:var(--brand);color:var(--brand-ink);cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.hero{display:grid;grid-template-columns:1fr;gap:32px;padding:24px 0 56px}
+@media (min-width:880px){.hero{grid-template-columns:1fr 1.15fr;align-items:center;gap:48px;padding-top:48px}}
+.hero h1{font-size:clamp(36px,6vw,58px)}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:46ch;margin:18px 0 26px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.fine{font-size:13px;color:var(--muted);margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;padding:14px;border:0;background:none;color:var(--muted);font:600 15px system-ui,sans-serif;cursor:pointer;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand)}
+.row{display:grid;grid-template-columns:1.1fr 1fr 1fr;align-items:center;gap:8px;width:100%;padding:12px 16px;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.row:hover,.row[aria-pressed="true"]{background:var(--soft)}
+.sym{font-weight:700}
+.nm{display:block;font-size:13px;color:var(--muted);font-weight:400}
+.px{text-align:right;font-variant-numeric:tabular-nums}
+.chg{display:block;font-size:13px;font-weight:600}
+.up{color:var(--up)}.down{color:var(--down)}
+svg.spark{width:100%;height:34px;display:block}
+.ticket{padding:16px;display:grid;gap:12px}
+.ticket .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ticket .top strong{font-size:18px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{padding:11px;border:0;background:none;color:var(--muted);font:600 15px system-ui,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+label{font-size:14px;color:var(--muted);display:grid;gap:6px}
+input{font:600 16px system-ui,sans-serif;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.sum{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.sum b{color:var(--ink);font-variant-numeric:tabular-nums}
+#msg{min-height:22px;font-size:14px;margin:0}
+section{padding:56px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(28px,4vw,38px);margin-bottom:28px;max-width:20ch}
+.cols{display:grid;grid-template-columns:1fr;gap:28px}
+@media (min-width:760px){.cols{grid-template-columns:repeat(3,1fr)}}
+.cols h3{font-size:21px;margin-bottom:8px}
+.cols p{margin:0;color:var(--muted)}
+.fees{width:100%;border-collapse:collapse;max-width:720px}
+.fees th,.fees td{padding:14px 10px;text-align:left;border-bottom:1px solid var(--line)}
+.fees th:last-child,.fees td:last-child{text-align:right}
+.fees td:last-child{font-weight:700;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.steps{display:grid;gap:16px;padding:0;margin:0;list-style:none;counter-reset:s;max-width:640px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:12px}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-weight:700}
+.steps b{display:block}
+.steps span{color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:13px;color:var(--muted)}
+footer p{max-width:80ch;margin:0 0 10px}
+@media (max-width:560px){nav a.hide{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">Tidemark</a>
+    <nav>
+      <a class="hide" href="#why">Why Tidemark</a>
+      <a class="hide" href="#pricing">Pricing</a>
+      <a class="hide" href="#start">Get started</a>
+      <a class="btn" href="#start">Open an account</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <h1>Stocks and crypto, one account, one price you can read.</h1>
+      <p class="lead">Buy shares and coins side by side, see every fee before you confirm, and move cash between them in seconds.</p>
+      <div class="cta">
+        <a class="btn" href="#start">Open an account</a>
+        <a class="btn ghost" href="#pricing">See fees</a>
+      </div>
+      <p class="fine">Sample prices on this page are simulated for demonstration. Nothing here is a real trade.</p>
+    </div>
+
+    <div class="card" aria-label="Live market board and order ticket">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="t-stocks" aria-selected="true" data-k="stocks">Stocks</button>
+        <button role="tab" id="t-crypto" aria-selected="false" data-k="crypto">Crypto</button>
+      </div>
+      <div id="board" role="tabpanel"></div>
+      <form class="ticket" id="ticket" onsubmit="return false">
+        <div class="top"><strong id="tSym">AAPL</strong><span id="tPx" class="px"></span></div>
+        <div class="seg" role="group" aria-label="Order side">
+          <button type="button" id="buy" aria-pressed="true">Buy</button>
+          <button type="button" id="sell" aria-pressed="false">Sell</button>
+        </div>
+        <label>Quantity
+          <input id="qty" type="number" min="0" step="any" value="1" inputmode="decimal">
+        </label>
+        <div class="sum"><span>Fee</span><b id="fee">$0.00</b></div>
+        <div class="sum"><span id="totLbl">Estimated cost</span><b id="tot">$0.00</b></div>
+        <button class="btn" id="place" type="button">Place buy order</button>
+        <p id="msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <section id="why">
+    <div class="wrap">
+      <h2>Built for people who check their balance twice a day</h2>
+      <div class="cols">
+        <div><h3>One balance</h3><p>Cash sits in a single pool. Buy a share at 9:31 and a coin at midnight without transferring anything first.</p></div>
+        <div><h3>Fees up front</h3><p>The order ticket shows the exact fee and total before you confirm. What you see is what leaves your account.</p></div>
+        <div><h3>Clear records</h3><p>Every trade, deposit and withdrawal lands in one statement you can export for tax time.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <h2>What it costs to trade</h2>
+      <div class="tw">
+        <table class="fees">
+          <thead><tr><th>Item</th><th>Fee</th></tr></thead>
+          <tbody>
+            <tr><td>Stock and ETF trades</td><td>$0.00</td></tr>
+            <tr><td>Crypto trades</td><td>0.25%</td></tr>
+            <tr><td>Deposits by bank transfer</td><td>$0.00</td></tr>
+            <tr><td>Withdrawals to your bank</td><td>$0.00</td></tr>
+            <tr><td>Account minimum</td><td>$0.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <h2>Open an account in four steps</h2>
+      <ol class="steps">
+        <li><div><b>Create your login</b><span>Email and a password, nothing else yet.</span></div></li>
+        <li><div><b>Verify who you are</b><span>Upload a photo ID and confirm your address.</span></div></li>
+        <li><div><b>Link a bank account</b><span>Deposits arrive the same business day.</span></div></li>
+        <li><div><b>Place your first order</b><span>Pick a stock or coin and confirm the total.</span></div></li>
+      </ol>
+      <p style="margin-top:28px"><a class="btn" href="#top">Open an account</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Tidemark is a demonstration brand and not a licensed broker. Prices, charts and orders on this page are simulated and are not financial advice.</p>
+    <p>Real investing involves risk, including loss of principal. Crypto assets are volatile and are not covered by deposit insurance.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var DATA={
+    stocks:[["AAPL","Apple",227.4],["NVDA","NVIDIA",131.2],["MSFT","Microsoft",418.9],["TSLA","Tesla",262.3]],
+    crypto:[["BTC","Bitcoin",68250],["ETH","Ethereum",2480],["SOL","Solana",168.4],["XRP","XRP",0.52]]
+  };
+  var N=40, assets={}, kind="stocks", sel="AAPL", side="buy";
+  Object.keys(DATA).forEach(function(k){
+    DATA[k].forEach(function(a){
+      var h=[],p=a[2]*(0.97+Math.random()*0.02);
+      for(var i=0;i<N;i++){p*=1+(Math.random()-0.48)*0.006;h.push(p)}
+      h[N-1]=a[2];
+      assets[a[0]]={sym:a[0],name:a[1],kind:k,open:h[0],h:h};
+    });
+  });
+  function money(v){
+    var d=v<1?4:2;
+    return "$"+v.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+  }
+  function spark(h,up){
+    var mn=Math.min.apply(null,h),mx=Math.max.apply(null,h),w=100,ht=30,r=(mx-mn)||1;
+    var pts=h.map(function(v,i){return (i/(h.length-1)*w).toFixed(1)+","+(ht-(v-mn)/r*(ht-4)-2).toFixed(1)}).join(" ");
+    return '<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="'+(up?"var(--up)":"var(--down)")+'" stroke-width="1.6" vector-effect="non-scaling-stroke" points="'+pts+'"/></svg>';
+  }
+  function board(){
+    var el=document.getElementById("board"),html="";
+    DATA[kind].forEach(function(a){
+      var s=assets[a[0]],p=s.h[N-1],c=(p-s.open)/s.open*100,up=c>=0;
+      html+='<button class="row" type="button" data-s="'+s.sym+'" aria-pressed="'+(s.sym===sel)+'">'
+        +'<span class="sym">'+s.sym+'<span class="nm">'+s.name+'</span></span>'
+        +spark(s.h,up)
+        +'<span class="px">'+money(p)+'<span class="chg '+(up?"up":"down")+'">'+(up?"+":"\u2212")+Math.abs(c).toFixed(2)+'%</span></span></button>';
+    });
+    el.innerHTML=html;
+  }
+  function ticket(){
+    var s=assets[sel],p=s.h[N-1],q=parseFloat(document.getElementById("qty").value)||0;
+    var rate=s.kind==="crypto"?0.0025:0,gross=p*q,fee=gross*rate;
+    var tot=side==="buy"?gross+fee:gross-fee;
+    document.getElementById("tSym").textContent=s.sym+" \u00b7 "+s.name;
+    document.getElementById("tPx").textContent=money(p);
+    document.getElementById("fee").textContent=money(fee);
+    document.getElementById("tot").textContent=money(tot);
+    document.getElementById("totLbl").textContent=side==="buy"?"Estimated cost":"Estimated proceeds";
+    document.getElementById("place").textContent="Place "+side+" order";
+  }
+  function tick(){
+    Object.keys(assets).forEach(function(k){
+      var s=assets[k],p=s.h[N-1]*(1+(Math.random()-0.495)*0.0025);
+      s.h.push(p);s.h.shift();
+    });
+    board();ticket();
+  }
+  document.getElementById("board").addEventListener("click",function(e){
+    var b=e.target.closest(".row");if(!b)return;
+    sel=b.getAttribute("data-s");board();ticket();
+  });
+  document.querySelectorAll(".tabs button").forEach(function(b){
+    b.addEventListener("click",function(){
+      kind=b.getAttribute("data-k");sel=DATA[kind][0][0];
+      document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+      board();ticket();
+    });
+  });
+  function setSide(s){
+    side=s;
+    document.getElementById("buy").setAttribute("aria-pressed",s==="buy");
+    document.getElementById("sell").setAttribute("aria-pressed",s==="sell");
+    ticket();
+  }
+  document.getElementById("buy").addEventListener("click",function(){setSide("buy")});
+  document.getElementById("sell").addEventListener("click",function(){setSide("sell")});
+  document.getElementById("qty").addEventListener("input",ticket);
+  document.getElementById("place").addEventListener("click",function(){
+    var q=parseFloat(document.getElementById("qty").value),m=document.getElementById("msg");
+    if(!(q>0)){m.textContent="Enter a quantity greater than zero.";m.className="down";return}
+    var s=assets[sel];
+    m.className="up";
+    m.textContent="Simulated "+side+" order filled: "+q+" "+s.sym+" at "+money(s.h[N-1])+". No real trade was made.";
+  });
+  board();ticket();
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setInterval(tick,reduce?4000:1500);
+})();
+</script>
+</body>
+</html>
