@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f"><meta name="description" content="Tidemark crypto — a clear, simple crypto trading demo.">
+<title>Tidemark Crypto | Trade with clarity</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap nav"><a class="brand" href="#top">tidemark<span>.</span></a><nav><a class="navlink" href="#markets">Markets</a><a class="navlink" href="#how">How it works</a><a class="button" href="#trade">Launch app ↗</a></nav></div></header>
+<main id="top">
+<div class="wrap hero">
+<div><div class="eyebrow">Crypto, made clearer</div><h1>Your next move.<br><span class="blue">Made with confidence.</span></h1><p>Explore digital assets, understand your order before you place it, and practice trading in a clean, simple experience.</p><div class="actions"><a class="button" href="#trade">Explore the demo</a><a class="button outline" href="#how">How it works</a></div><p class="note">Demo experience only. Market values and orders are simulated; no real funds or trades are involved.</p></div>
+<div class="panel" id="markets"><div class="panel-head"><div><strong>Market watch</strong><br><small>Demo prices · USD</small></div><span class="eyebrow">● Demo market</span></div><div class="markets" id="market-list"></div>
+<div class="trade" id="trade"><div class="trade-top"><strong id="selected-name">Bitcoin · BTC</strong><span id="selected-price">$67,420.00</span></div><div class="seg"><button id="buy" aria-pressed="true">Buy</button><button id="sell" class="sell" aria-pressed="false">Sell</button></div><label>Amount in USD<input id="amount" type="number" min="1" step="1" value="100"></label><div class="totals"><div class="total-row"><span>Estimated quantity</span><b id="quantity">0.001483 BTC</b></div><div class="total-row"><span>Demo fee (0.25%)</span><b id="fee">$0.25</b></div><div class="total-row"><span id="total-label">Estimated total</span><b id="total">$100.25</b></div></div><button class="button" id="place">Preview buy order</button><p id="status" role="status" aria-live="polite"></p></div></div>
+</div>
+<section class="section"><div class="wrap"><div class="eyebrow">Built around clarity</div><h2>Crypto tools without the clutter.</h2><p class="section-lead">A straightforward demo interface designed to make the essentials easy to understand.</p><div class="features"><article class="feature"><div class="symbol">◈</div><h3>See the market</h3><p>Compare popular assets and review illustrative price movements in one place.</p></article><article class="feature"><div class="symbol">⌁</div><h3>Know the numbers</h3><p>Review estimated quantity, fee and total before previewing an order.</p></article><article class="feature"><div class="symbol">◎</div><h3>Practice safely</h3><p>Explore the flow with simulated orders—no wallet connection or real funds.</p></article></div></div></section>
+<section class="section" id="how"><div class="wrap"><div class="eyebrow">A simple flow</div><h2>From curious to confident.</h2><div class="steps"><article class="step"><h3>Choose an asset</h3><p>Select a coin from the market watch to view its demo price.</p></article><article class="step"><h3>Set your amount</h3><p>Enter a USD amount and review the estimated quantity and fee.</p></article><article class="step"><h3>Preview the order</h3><p>Try the buy or sell preview and see a clear simulated confirmation.</p></article></div></div></section>
+</main>
+<footer><div class="wrap"><p><strong>Tidemark</strong> is a demonstration brand, not a licensed broker or exchange. This website does not execute trades, custody assets, connect wallets, or accept deposits.</p><p>Prices and order calculations are simulated for illustrative purposes only and are not financial advice. Crypto assets are volatile and may result in loss.</p></div></footer>
+<script src="script.js"></script>
+</body></html>
