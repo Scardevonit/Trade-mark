@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tidemark | Account Preview</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.account-wrap{max-width:1100px;margin:0 auto;padding:32px 24px 70px}
+.account-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:20px 0 30px}
+.account-bar h1{font-size:clamp(28px,4vw,42px);margin:0}
+.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.account-card{background:var(--panel,#0d1d2d);border:1px solid var(--line,rgba(190,220,239,.13));border-radius:15px;padding:24px}
+.account-card h2{margin:0 0 18px;font-size:20px}
+.account-card label{display:block;font-size:12px;color:var(--muted,#9eb1c2);margin:12px 0 6px}
+.account-card input,.account-card select{width:100%;padding:12px;border:1px solid #304457;background:#07121f;color:#eef5fa;border-radius:8px}
+.account-card button,.account-action{border:0;border-radius:8px;padding:12px 16px;background:#54d6c2;color:#06201e;font-weight:700;cursor:pointer;margin-top:14px}
+.account-card button.secondary{background:transparent;color:#dce8ef;border:1px solid var(--line,rgba(190,220,239,.13))}
+.account-card button:disabled{opacity:.45;cursor:not-allowed}
+.profile-meta{color:var(--muted,#9eb1c2);font-size:13px}
+.status-pill{display:inline-block;border-radius:20px;padding:5px 10px;background:#27394a;color:#b9c9d6;font-size:11px}
+.status-pill.pending{background:#47391e;color:#f2d69a}
+.notice{font-size:12px;color:#f0d59a;line-height:1.5}
+.hidden{display:none!important}
+.account-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.account-tabs button{margin:0}
+.account-tabs button.active{background:#54d6c2;color:#06201e}
+.profile-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line,rgba(190,220,239,.13));font-size:13px}
+.admin-box{border:1px solid #6b5430;background:#211d16}
+@media(max-width:700px){.account-grid{grid-template-columns:1fr}.account-wrap{padding:25px 16px 55px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <a class="brand" href="index.html"><span class="logo">T</span>TIDEMARK</a>
+ <div class="wallet"><span>ACCOUNT PREVIEW</span><strong id="headerStatus">Signed out</strong></div>
+ <a class="launch" href="index.html">Back to site ↗</a>
+</header>
+<main class="account-wrap">
+ <div class="account-bar"><div><p class="eyebrow">ACCOUNT ACCESS</p><h1>Welcome to Tidemark</h1></div><div class="account-tabs"><button id="showLogin" class="active">Login</button><button id="showSignup" class="secondary">Create profile</button></div></div>
+ <p class="notice">Preview only: this static GitHub Pages page does not provide secure authentication or server-side accounts. Do not use real passwords or sensitive personal information. Profile data is stored only in this browser.</p>
+ <div class="account-grid">
+  <section class="account-card" id="authCard">
+   <h2 id="authTitle">Login preview</h2>
+   <form id="authForm">
+    <label for="displayName" id="nameLabel" class="hidden">Full name</label><input id="displayName" class="hidden" autocomplete="name" placeholder="Your name">
+    <label for="email">Email address</label><input id="email" type="email" required autocomplete="email" placeholder="you@example.com">
+    <label for="password">Password (preview only)</label><input id="password" type="password" required autocomplete="off" placeholder="Do not use a real password">
+    <button type="submit" id="authSubmit">Login preview</button>
+   </form>
+   <p class="profile-meta" id="authMessage">Create a local preview profile or sign in to one stored in this browser.</p>
+  </section>
+  <section class="account-card hidden" id="profileCard">
+   <h2>Your profile</h2>
+   <div class="profile-row"><span>Name</span><strong id="profileName">—</strong></div>
+   <div class="profile-row"><span>Email</span><strong id="profileEmail">—</strong></div>
+   <div class="profile-row"><span>Account type</span><strong id="profileRole">Member</strong></div>
+   <div class="profile-row"><span>Investment services</span><strong>Not enabled</strong></div>
+   <p class="notice">This profile is a local browser preview, not a verified investor account.</p>
+   <button class="secondary" id="logoutBtn">Sign out</button>
+  </section>
+  <section class="account-card hidden admin-box" id="adminCard">
+   <h2>Admin workspace</h2>
+   <p><strong>Admin email:</strong> bakkihsprecious82@gmail.com</p>
+   <p><span class="status-pill pending">Payment enablement: pending review</span></p>
+   <p class="notice">Payment activation is intentionally unavailable here. A secure backend, authorized payment provider, identity/security controls, and applicable business approvals must be in place before deposits can be enabled.</p>
+   <div class="profile-row"><span>Deposit processing</span><strong>Disabled</strong></div>
+   <div class="profile-row"><span>Admin access</span><strong>Preview only</strong></div>
+   <button id="requestReview" disabled title="Requires secure backend and compliance approval">Enable deposits</button>
+   <p class="profile-meta">The admin email is shown for configuration guidance only. This client-side check is not secure and must not be used to protect a live admin account.</p>
+  </section>
+ </div>
+</main>
+<footer><span class="brand"><span class="logo">T</span>TIDEMARK</span><span>Account preview · No deposits or real-money services</span></footer>
+<script>
+(() => {
+ const ADMIN_EMAIL='bakkihsprecious82@gmail.com';
+ const $=id=>document.getElementById(id);
+ const storageKey='tidemark_preview_profiles_v1';
+ let profiles={}; let current=null; let mode='login';
+ try{profiles=JSON.parse(localStorage.getItem(storageKey)||'{}')}catch(_){profiles={}}
+ function persist(){try{localStorage.setItem(storageKey,JSON.stringify(profiles))}catch(_){}}
+ function setMode(next){
+  mode=next;
+  $('showLogin').classList.toggle('active',mode==='login');
+  $('showSignup').classList.toggle('active',mode==='signup');
+  $('showSignup').classList.toggle('secondary',mode!=='signup');
+  $('showLogin').classList.toggle('secondary',mode!=='login');
+  $('authTitle').textContent=mode==='signup'?'Create profile preview':'Login preview';
+  $('authSubmit').textContent=mode==='signup'?'Create local profile':'Login preview';
+  $('displayName').classList.toggle('hidden',mode!=='signup');
+  $('nameLabel').classList.toggle('hidden',mode!=='signup');
+  $('displayName').required=mode==='signup';
+  $('password').required=true;
+ }
+ function render(){
+  const signed=!!current;
+  $('headerStatus').textContent=signed?'Signed in':'Signed out';
+  $('profileCard').classList.toggle('hidden',!signed);
+  $('adminCard').classList.toggle('hidden',!(signed&&current.email.toLowerCase()===ADMIN_EMAIL));
+  $('authCard').classList.toggle('hidden',signed);
+  if(signed){
+   $('profileName').textContent=current.name||'Member';
+   $('profileEmail').textContent=current.email;
+   $('profileRole').textContent=current.email.toLowerCase()===ADMIN_EMAIL?'Admin preview':'Member';
+  }
+ }
+ $('showLogin').addEventListener('click',()=>setMode('login'));
+ $('showSignup').addEventListener('click',()=>setMode('signup'));
+ $('authForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=$('email').value.trim().toLowerCase();
+  const password=$('password').value;
+  if(mode==='signup'){
+   const name=$('displayName').value.trim();
+   if(!name){$('authMessage').textContent='Enter a display name.';return}
+   if(profiles[email]){$('authMessage').textContent='A local preview profile already exists for this email. Switch to Login.';return}
+   // Store profile metadata only; never store the password.
+   profiles[email]={name,email,createdAt:new Date().toISOString()};
+   persist();
+   current=profiles[email];
+   $('authMessage').textContent='Local preview profile created. No password was saved.';
+  }else{
+   if(!profiles[email]){$('authMessage').textContent='No local preview profile found. Choose Create profile first.';return}
+   current=profiles[email];
+   $('authMessage').textContent='Signed in to this browser preview. Password is not verified.';
+  }
+  $('password').value='';
+  render();
+ });
+ $('logoutBtn').addEventListener('click',()=>{current=null;render();setMode('login')});
+ setMode('login');render();
+})();
+</script>
+</body>
+</html>
